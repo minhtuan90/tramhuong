@@ -41,25 +41,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // HÀM MENU ĐÃ ĐƯỢC VIẾT LẠI DỰA TRÊN 'accordion-content' CỦA BẠN
 function initAccordion() {
-    // Tìm tất cả các nội dung bị ẩn
-    const contents = document.querySelectorAll('.accordion-content');
+    // Đã bổ sung thêm các tên class phổ biến nhất của phần FAQ (faq-content, faq-answer, answer)
+    const contents = document.querySelectorAll('.accordion-content, .faq-content, .faq-answer, .answer');
     
     contents.forEach(content => {
-        // Lấy cái thẻ nằm ngay trên nó (chính là thẻ tiêu đề để bấm)
+        // Lấy thẻ tiêu đề nằm ngay trên phần nội dung
         const header = content.previousElementSibling;
         
         if (header) {
-            // Thêm hình bàn tay khi di chuột vào để dễ nhận biết
             header.style.cursor = 'pointer';
             
-            // Ép nội dung ẩn đi lúc mới vào trang (phòng hờ CSS bị thiếu)
+            // Ẩn nội dung lúc mới tải trang
             if (!content.classList.contains('active')) {
                 content.style.display = 'none';
             }
             
             // Gắn sự kiện Click
             header.onclick = function() {
-                // Tùy chọn: Đóng các menu khác lại trước khi mở menu này
+                // Tùy chọn: Đóng các câu hỏi khác khi mở câu hỏi này
                 contents.forEach(c => {
                     if (c !== content) {
                         c.style.display = 'none';
@@ -67,7 +66,7 @@ function initAccordion() {
                     }
                 });
 
-                // Bật/tắt menu hiện tại
+                // Bật/tắt câu hỏi hiện tại
                 if (content.style.display === 'none' || content.style.display === '') {
                     content.style.display = 'block';
                     content.classList.add('active');
