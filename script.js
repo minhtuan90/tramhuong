@@ -147,18 +147,36 @@ if(checkoutForm) {
         btn.innerText = "ĐANG XỬ LÝ...";
         btn.disabled = true;
 
+        // Đã cập nhật lại để khớp với HTML mới
+        const orderData = {
+            name: document.getElementById('cus-name').value,
+            phone: document.getElementById('cus-phone').value,
+            address: document.getElementById('cus-address').value,
+            product: "1 vòng trầm hương 108 Hạt",
+            price: 179000,
+            quantity: document.getElementById('checkout-qty').value
+        };
+
+        const scriptURL = 'YOUR_GOOGLE_SCRIPT_URL_HERE'; // Thay link API thật vào đây
+        
         setTimeout(() => {
+            if(window.ttq) {
+                ttq.track('CompletePayment');
+                ttq.track('Lead');
+            }
             closeCheckout();
             document.getElementById('success-overlay').classList.add('active');
             document.getElementById('success-modal').classList.add('active');
             btn.innerText = "XÁC NHẬN ĐẶT HÀNG";
             btn.disabled = false;
             checkoutForm.reset();
+            
+            // Xử lý lưu mộc cho Admin (nếu bạn vẫn dùng trang Admin tĩnh)
+            let orders = JSON.parse(localStorage.getItem('mockOrders') || '[]');
+            orderData.time = new Date().toLocaleString();
+            orders.push(orderData);
+            localStorage.setItem('mockOrders', JSON.stringify(orders));
+
         }, 1500);
     });
-}
-
-function closeSuccess() {
-    document.getElementById('success-overlay').classList.remove('active');
-    document.getElementById('success-modal').classList.remove('active');
 }
