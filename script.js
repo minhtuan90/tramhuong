@@ -10,9 +10,21 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- Slider Logic ---
 function initSlider() {
     const track = document.getElementById('slider-track');
-    const dotsContainer = document.getElementById('slider-dots');
     const slides = document.querySelectorAll('.slide');
+    const counterText = document.getElementById('image-counter-text');
     let currentIndex = 0;
+    
+    // Auto slide và cập nhật số 1/3, 2/3...
+    setInterval(() => {
+        currentIndex = (currentIndex + 1) % slides.length;
+        track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        
+        // Cập nhật text hiển thị số đếm ảnh
+        if(counterText) {
+            counterText.innerText = (currentIndex + 1) + '/' + slides.length;
+        }
+    }, 3000);
+}
     
     // Create dots
     slides.forEach((_, idx) => {
