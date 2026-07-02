@@ -48,35 +48,56 @@ document.addEventListener('DOMContentLoaded', () => {
     try { initCountdown(); } catch(e) { console.error(e); }
 });
 
-// HÀM MENU FAQ (ĐÃ THÊM LỆNH ÉP HIỂN THỊ CHỐNG LỖI CSS)
+// HÀM MENU FAQ (PHIÊN BẢN CHUẨN TRỊ LỖI BỊ CSS CHE KHUẤT)
 function initAccordion() {
-    const contents = document.querySelectorAll('.accordion-content');
+    // 1. Bắt thẳng vào thẻ bọc ngoài cùng của từng câu hỏi
+    const items = document.querySelectorAll('.accordion-item');
     
-    contents.forEach(content => {
-        let header = content.previousElementSibling;
+    items.forEach(item => {
+        const header = item.querySelector('.accordion-header');
+        const content = item.querySelector('.accordion-content');
+        const icon = item.querySelector('.icon');
         
-        if (header) {
-            header.style.cursor = 'pointer';
-            
-            if (!content.classList.contains('active')) {
-                content.style.display = 'none';
-            }
+        if (header && content) {
+            // Ẩn nội dung khi mới tải trang
+            content.style.display = 'none';
             
             header.addEventListener('click', function(e) {
                 e.preventDefault(); 
-                const icon = header.querySelector('.icon');
+                
+                // Kiểm tra xem menu đang đóng hay mở
+                const isOpen = content.style.display === 'block';
 
-                if (content.style.display === 'none' || content.style.display === '') {
-                    // CÁC LỆNH ÉP HIỂN THỊ XUYÊN THỦNG MỌI CSS
+                // Tùy chọn: Tự động đóng các câu hỏi khác khi mở câu hỏi này
+                items.forEach(otherItem => {
+                    const otherContent = otherItem.querySelector('.accordion-content');
+                    const otherIcon = otherItem.querySelector('.icon');
+                    if (otherContent) {
+                        otherContent.style.display = 'none';
+                        otherItem.style.height = 'auto'; 
+                        otherItem.classList.remove('active');
+                        if (otherIcon) otherIcon.innerText = '+';
+                    }
+                });
+
+                // Bật/tắt câu hỏi hiện tại
+                if (!isOpen) {
                     content.style.display = 'block';
-                    content.style.opacity = '1';
-                    content.style.visibility = 'visible';
-                    content.style.height = 'auto';
-                    content.style.maxHeight = 'none';
-                    
-                    content.classList.add('active');
+                    // Ép thẻ cha bung chiều cao và tràn viền để không che chữ
+                    item.style.height = 'auto';
+                    item.style.overflow = 'visible';
+                    item.classList.add('active');
                     if (icon) icon.innerText = '-'; 
                 } else {
+                    content.style.display = 'none';
+                    item.classList.remove('active');
+                    if (icon) icon.innerText = '+'; 
+                }
+            });
+        }
+    });
+}
+
                     // ĐÓNG MENU
                     content.style.display = 'none';
                     content.classList.remove('active');
