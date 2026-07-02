@@ -92,7 +92,7 @@ if(checkoutForm) {
             quantity: document.getElementById('checkout-qty').value
         };
 
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbydEBFsTt2S2GfMV0nR5mRUzlethJPiKgqQWGRJJxdHaK-l5WN21ixPuApJQFyd8CLB/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwRi0gDFQgXDkZLY5ethhg-1NGT3He-SZW06xtrg9Et-2H8S0fQK7GsNEN4xN9ZexJ2Iw/exec';
 
         fetch(scriptURL, {
             method: 'POST',
