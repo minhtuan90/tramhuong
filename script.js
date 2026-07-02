@@ -1,12 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
-    try { initSlider(); } catch(e) { console.log(e); }
-    try { initCountdown(); } catch(e) { console.log(e); }
-    try { initAccordion(); } catch(e) { console.log(e); }
-    try { generateFakeReviews(); } catch(e) { console.log(e); }
-    try { startFakeOrdersToast(); } catch(e) { console.log(e); }
+    try { initSlider(); } catch(e) { console.error("Lỗi Slider:", e); }
+    try { initCountdown(); } catch(e) { console.error("Lỗi Timer:", e); }
+    try { initAccordion(); } catch(e) { console.error("Lỗi Accordion:", e); }
+    try { generateFakeReviews(); } catch(e) { console.error("Lỗi Review:", e); }
+    try { startFakeOrdersToast(); } catch(e) { console.error("Lỗi Toast:", e); }
 });
 
-// --- Slider Logic (Đã cập nhật hiển thị số 1/3) ---
+// --- Slider Logic ---
 function initSlider() {
     const track = document.getElementById('slider-track');
     const slides = document.querySelectorAll('.slide');
@@ -25,9 +25,9 @@ function initSlider() {
     }, 3000);
 }
 
-// --- Countdown Timer (Đã bọc an toàn) ---
+// --- Countdown Timer ---
 function initCountdown() {
-    let time = 4 * 3600 + 59 * 60 + 59; // 4:59:59
+    let time = 4 * 3600 + 59 * 60 + 59; 
     const timerElements = document.querySelectorAll('.time-box');
     
     if(timerElements.length < 3) return;
@@ -67,21 +67,14 @@ function initAccordion() {
 // --- Fake Reviews ---
 function generateFakeReviews() {
     const reviewData = [
-        { name: "V***📚", avatar: "V", text: "nhận hàng xong là phải quay lại feedback cho shop liền, đóng gọi hàng nó có tâm gì đâu á; vòng thơm nhẹ, rất ưng.", imgs: ['assets/images/rev-1.webp', 'assets/images/rev-2.webp'] },
-        { name: "D***u V***", avatar: "D", text: "Hàng nhận nhanh ạ. Vòng đẹp nha, có 1 mùi hương nhẹ. Thích nhất chai dầu tặng kèm ạ mùi dễ chịu. Đóng gói cẩn thận", imgs: ['assets/images/rev-3.webp', 'assets/images/rev-4.webp'] },
-        { name: "Nguyễn T***.", avatar: "N", text: "Đã mua lần 2 tặng mẹ, shop tư vấn nhiệt tình, giao hàng nhanh. Cho shop 5 sao nhé.", imgs: [] },
-        { name: "Trần M***", avatar: "T", text: "Sản phẩm tốt, đúng mô tả. Đeo lên tay nhìn rất sang. Mùi trầm dịu nhẹ thoang thoảng.", imgs: ['assets/images/rev-5.webp'] }
+        { name: "V***📚", avatar: "V", text: "nhận hàng xong là phải quay lại feedback cho shop liền, đóng gọi hàng nó có tâm gì đâu á; vòng thơm nhẹ, rất ưng.", imgs: [] },
+        { name: "D***u V***", avatar: "D", text: "Hàng nhận nhanh ạ. Vòng đẹp nha, có 1 mùi hương nhẹ.", imgs: [] }
     ];
     
     const list = document.getElementById('review-list');
     if(!list) return;
 
     reviewData.forEach(r => {
-        let imgsHtml = '';
-        if (r.imgs.length > 0) {
-            imgsHtml = `<div class="review-images">` + r.imgs.map(src => `<img src="${src}" loading="lazy">`).join('') + `</div>`;
-        }
-        
         const html = `
             <div class="review-item">
                 <div class="review-user">
@@ -92,7 +85,6 @@ function generateFakeReviews() {
                     </div>
                 </div>
                 <div class="review-text">${r.text}</div>
-                ${imgsHtml}
             </div>
         `;
         list.insertAdjacentHTML('beforeend', html);
@@ -101,7 +93,7 @@ function generateFakeReviews() {
 
 // --- Fake Live Orders (Toast) ---
 function startFakeOrdersToast() {
-    const names = ["Nguyễn Văn A", "Trần Thị B", "Lê Văn C", "Phạm Thị D", "Hoàng Văn E"];
+    const names = ["Nguyễn Văn A", "Trần Thị B", "Lê Văn C"];
     const container = document.getElementById('toast-container');
     if(!container) return;
 
@@ -112,7 +104,7 @@ function startFakeOrdersToast() {
         
         const toast = document.createElement('div');
         toast.className = 'toast';
-        toast.innerHTML = `<img src="assets/images/product-1.webp"> <span><strong>${name}</strong> vừa đặt mua 1 Combo (${time} phút trước)</span>`;
+        toast.innerHTML = `<span><strong>${name}</strong> vừa đặt mua 1 Combo (${time} phút trước)</span>`;
         
         container.appendChild(toast);
         setTimeout(() => toast.remove(), 4000);
@@ -126,10 +118,6 @@ function openCheckout() {
     if(overlay && modal) {
         overlay.classList.add('active');
         modal.classList.add('active');
-        // TikTok Pixel Event
-        if(window.ttq) ttq.track('InitiateCheckout');
-    } else {
-        alert('Lỗi: Không tìm thấy Form đặt hàng. Hãy kiểm tra lại HTML.');
     }
 }
 
@@ -155,43 +143,17 @@ const checkoutForm = document.getElementById('checkout-form');
 if(checkoutForm) {
     checkoutForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        
         const btn = document.getElementById('submit-order-btn');
         btn.innerText = "ĐANG XỬ LÝ...";
         btn.disabled = true;
 
-        const orderData = {
-            name: document.getElementById('cus-name').value,
-            phone: document.getElementById('cus-phone').value,
-            address: document.getElementById('cus-address').value,
-            province: document.getElementById('cus-province').value,
-            district: document.getElementById('cus-district').value,
-            ward: document.getElementById('cus-ward').value,
-            note: document.getElementById('cus-note').value,
-            product: "Combo Vòng Trầm Hương 108 Hạt",
-            price: 126840,
-            quantity: document.getElementById('checkout-qty').value
-        };
-
-        const scriptURL = 'YOUR_GOOGLE_SCRIPT_URL_HERE'; // Thay link API
-        
         setTimeout(() => {
-            if(window.ttq) {
-                ttq.track('CompletePayment');
-                ttq.track('Lead');
-            }
             closeCheckout();
             document.getElementById('success-overlay').classList.add('active');
             document.getElementById('success-modal').classList.add('active');
             btn.innerText = "XÁC NHẬN ĐẶT HÀNG";
             btn.disabled = false;
             checkoutForm.reset();
-            
-            let orders = JSON.parse(localStorage.getItem('mockOrders') || '[]');
-            orderData.time = new Date().toLocaleString();
-            orders.push(orderData);
-            localStorage.setItem('mockOrders', JSON.stringify(orders));
-
         }, 1500);
     });
 }
