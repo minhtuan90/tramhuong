@@ -162,7 +162,16 @@ if (checkoutForm) {
         if(btn) { btn.innerText = "ĐANG XỬ LÝ..."; btn.disabled = true; }
 
         // Đóng gói dữ liệu bằng FormData (An toàn, không lỗi JSON)
-        const data = new FormData();
+       const checkoutForm = document.getElementById('checkout-form');
+if (checkoutForm) {
+    checkoutForm.addEventListener('submit', function(e) {
+        e.preventDefault(); 
+        
+        const btn = document.getElementById('submit-order-btn');
+        if(btn) { btn.innerText = "ĐANG XỬ LÝ..."; btn.disabled = true; }
+
+        // ĐỔI SANG URLSearchParams ĐỂ GOOGLE CHẮC CHẮN ĐỌC ĐƯỢC
+        const data = new URLSearchParams();
         data.append('name', document.getElementById('cus-name').value);
         data.append('phone', document.getElementById('cus-phone').value);
         data.append('address', document.getElementById('cus-address').value);
@@ -172,14 +181,14 @@ if (checkoutForm) {
         const qtyInput = document.getElementById('checkout-qty');
         data.append('quantity', qtyInput ? qtyInput.value : 1);
 
-        // 👉 DÁN LINK CỦA BẠN VÀO ĐÂY:
+        // 👉 ĐẢM BẢO LINK NÀY LÀ LINK MỚI NHẤT CỦA BẠN
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwRi0gDFQgXDkZLY5ethhg-1NGT3He-SZW06xtrg9Et-2H8S0fQK7GsNEN4xN9ZexJ2Iw/exec';
 
         // Gửi lệnh POST
         fetch(scriptURL, {
             method: 'POST',
             body: data,
-            mode: 'no-cors' 
+            mode: 'no-cors' // Vẫn giữ no-cors để không bị chặn
         })
         .then(() => {
             closeCheckout();
