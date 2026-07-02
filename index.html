@@ -129,8 +129,20 @@
 
     </main>
 
+    <!-- Sticky Bottom CTA -->
     <div class="sticky-bottom-cta">
-           <button class="buy-now-btn pulse-animation" onclick="openCheckout()">Mua Ngay<br><small>179.000đ | Freeship</small></button>
+        <button class="icon-btn" onclick="openChat()">
+            <span class="icon">💬</span>Chat
+        </button>
+        
+        <!-- Đã sửa onclick thành openCheckout() -->
+        <button class="icon-btn cart-btn" onclick="openCheckout()">
+            <span class="icon">🛒</span>Giỏ hàng
+        </button>
+        
+        <button class="buy-now-btn pulse-animation" onclick="openCheckout()">
+            Mua Ngay<br><small>126.840đ | Freeship</small>
+        </button>
     </div>
 
     <div class="overlay" id="cart-overlay" onclick="closeCart()"></div>
