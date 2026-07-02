@@ -25,7 +25,7 @@ if (checkoutForm) {
         };
 
         // Dán LINK_EXEC_CỦA_BẠN_VÀO_ĐÂY (Cái link có đuôi /exec)
-        const scriptURL = 'LINK_EXEC_CỦA_BẠN_VÀO_ĐÂY'; 
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwRi0gDFQgXDkZLY5ethhg-1NGT3He-SZW06xtrg9Et-2H8S0fQK7GsNEN4xN9ZexJ2Iw/exec'; 
 
         var xhr = new XMLHttpRequest();
         xhr.open('POST', scriptURL);
