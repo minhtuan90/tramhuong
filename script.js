@@ -1,6 +1,5 @@
 // ==========================================
-// 1. CÁC HÀM GIAO DIỆN CHÍNH (Nút bấm, Menu)
-// Đã thêm kiểm tra an toàn (if) để không bao giờ bị lỗi liệt nút
+// 1. CÁC HÀM GIAO DIỆN CHÍNH
 // ==========================================
 function openCheckout() {
     const overlay = document.getElementById('checkout-overlay');
@@ -21,7 +20,7 @@ function closeSuccess() {
     const sModal = document.getElementById('success-modal');
     if(sOverlay) sOverlay.classList.remove('active');
     if(sModal) sModal.classList.remove('active');
-    closeCheckout(); // Đảm bảo form mua hàng cũng tắt
+    closeCheckout();
 }
 
 function changeQty(delta) {
@@ -31,30 +30,52 @@ function changeQty(delta) {
     input.value = val < 1 ? 1 : val;
 }
 
-function openChat() {
-    alert("Đang chuyển hướng đến Zalo/Messenger...");
-}
-
 // ==========================================
-// 2. KHỞI TẠO CÁC HIỆU ỨNG (Chạy ngầm)
-// Dùng try-catch để nếu lỗi sẽ tự bỏ qua, không làm liệt web
+// 2. KHỞI TẠO HIỆU ỨNG (Menu, Slider, Timer)
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    try { initAccordion(); } catch(e) {}
-    try { initSlider(); } catch(e) {}
-    try { initCountdown(); } catch(e) {}
+    try { initAccordion(); } catch(e) { console.error(e); }
+    try { initSlider(); } catch(e) { console.error(e); }
+    try { initCountdown(); } catch(e) { console.error(e); }
 });
 
+// HÀM MENU ĐÃ ĐƯỢC VIẾT LẠI DỰA TRÊN 'accordion-content' CỦA BẠN
 function initAccordion() {
-    const items = document.querySelectorAll('.accordion-item');
-    items.forEach(item => {
-        const header = item.querySelector('.accordion-header');
-        if(header) {
-            header.addEventListener('click', () => {
-                const isActive = item.classList.contains('active');
-                items.forEach(i => i.classList.remove('active')); // Đóng các tab khác
-                if (!isActive) item.classList.add('active'); // Mở tab hiện tại
-            });
+    // Tìm tất cả các nội dung bị ẩn
+    const contents = document.querySelectorAll('.accordion-content');
+    
+    contents.forEach(content => {
+        // Lấy cái thẻ nằm ngay trên nó (chính là thẻ tiêu đề để bấm)
+        const header = content.previousElementSibling;
+        
+        if (header) {
+            // Thêm hình bàn tay khi di chuột vào để dễ nhận biết
+            header.style.cursor = 'pointer';
+            
+            // Ép nội dung ẩn đi lúc mới vào trang (phòng hờ CSS bị thiếu)
+            if (!content.classList.contains('active')) {
+                content.style.display = 'none';
+            }
+            
+            // Gắn sự kiện Click
+            header.onclick = function() {
+                // Tùy chọn: Đóng các menu khác lại trước khi mở menu này
+                contents.forEach(c => {
+                    if (c !== content) {
+                        c.style.display = 'none';
+                        c.classList.remove('active');
+                    }
+                });
+
+                // Bật/tắt menu hiện tại
+                if (content.style.display === 'none' || content.style.display === '') {
+                    content.style.display = 'block';
+                    content.classList.add('active');
+                } else {
+                    content.style.display = 'none';
+                    content.classList.remove('active');
+                }
+            };
         }
     });
 }
@@ -86,7 +107,7 @@ function initCountdown() {
 }
 
 // ==========================================
-// 3. XỬ LÝ ĐẶT HÀNG (Sử dụng GET request)
+// 3. XỬ LÝ ĐẶT HÀNG QUA GOOGLE SHEETS
 // ==========================================
 const checkoutForm = document.getElementById('checkout-form');
 if (checkoutForm) {
@@ -96,24 +117,21 @@ if (checkoutForm) {
         const btn = document.getElementById('submit-order-btn');
         if(btn) { btn.innerText = "ĐANG GỬI ĐƠN..."; btn.disabled = true; }
 
-        // Lấy dữ liệu an toàn (phòng trường hợp HTML bị thiếu ID)
         const nameNode = document.getElementById('cus-name');
         const phoneNode = document.getElementById('cus-phone');
         const addressNode = document.getElementById('cus-address');
         const qtyNode = document.getElementById('checkout-qty');
 
-        const name = nameNode ? nameNode.value : "Không rõ";
-        const phone = phoneNode ? phoneNode.value : "Không rõ";
-        const address = addressNode ? addressNode.value : "Không rõ";
+        const name = nameNode ? nameNode.value : "";
+        const phone = phoneNode ? phoneNode.value : "";
+        const address = addressNode ? addressNode.value : "";
         const qty = qtyNode ? qtyNode.value : 1;
 
-        // 👉 1. BẠN HÃY DÁN LINK API CỦA BẠN VÀO DÒNG NÀY:
+        // 👉 NHỚ DÁN LẠI LINK API CỦA BẠN VÀO ĐÂY:
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwRi0gDFQgXDkZLY5ethhg-1NGT3He-SZW06xtrg9Et-2H8S0fQK7GsNEN4xN9ZexJ2Iw/exec';
         
-        // Tạo đường link chứa dữ liệu (Cách này Google 100% nhận được)
         const finalURL = `${scriptURL}?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&address=${encodeURIComponent(address)}&product=VongTram&price=179000&quantity=${qty}`;
 
-        // Gửi ngầm qua fetch (dùng GET để khớp với hàm doGet ở Google Script)
         fetch(finalURL, { method: 'GET', mode: 'no-cors' })
         .then(() => {
             closeCheckout();
@@ -126,7 +144,7 @@ if (checkoutForm) {
             checkoutForm.reset();
         })
         .catch(err => {
-            alert("Lỗi kết nối. Vui lòng kiểm tra mạng và thử lại!");
+            alert("Lỗi kết nối. Vui lòng thử lại!");
             if(btn) { btn.innerText = "XÁC NHẬN ĐẶT HÀNG"; btn.disabled = false; }
         });
     });
