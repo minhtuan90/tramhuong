@@ -1,60 +1,39 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Bọc trong try-catch để nếu 1 cái lỗi, các hiệu ứng khác vẫn chạy bình thường
     try { initSlider(); } catch(e) { console.log(e); }
     try { initCountdown(); } catch(e) { console.log(e); }
     try { initAccordion(); } catch(e) { console.log(e); }
     try { generateFakeReviews(); } catch(e) { console.log(e); }
     try { startFakeOrdersToast(); } catch(e) { console.log(e); }
-    try { loadCart(); } catch(e) { console.log(e); }
 });
 
-// --- Slider Logic ---
+// --- Slider Logic (Đã cập nhật hiển thị số 1/3) ---
 function initSlider() {
     const track = document.getElementById('slider-track');
     const slides = document.querySelectorAll('.slide');
     const counterText = document.getElementById('image-counter-text');
     let currentIndex = 0;
     
-    // Auto slide và cập nhật số 1/3, 2/3...
+    if(!track || slides.length === 0) return;
+
     setInterval(() => {
         currentIndex = (currentIndex + 1) % slides.length;
         track.style.transform = `translateX(-${currentIndex * 100}%)`;
         
-        // Cập nhật text hiển thị số đếm ảnh
         if(counterText) {
             counterText.innerText = (currentIndex + 1) + '/' + slides.length;
         }
     }, 3000);
 }
-    
-    // Create dots
-    slides.forEach((_, idx) => {
-        const dot = document.createElement('div');
-        dot.classList.add('dot');
-        if (idx === 0) dot.classList.add('active');
-        dotsContainer.appendChild(dot);
-    });
-    const dots = document.querySelectorAll('.dot');
 
-    // Simple auto slide
-    setInterval(() => {
-        currentIndex = (currentIndex + 1) % slides.length;
-        track.style.transform = `translateX(-${currentIndex * 100}%)`;
-        dots.forEach(d => d.classList.remove('active'));
-        dots[currentIndex].classList.add('active');
-    }, 3000);
-}
-
-// --- Countdown Timer ---
+// --- Countdown Timer (Đã bọc an toàn) ---
 function initCountdown() {
-    let time = 4 * 3600 + 59 * 60 + 59; // Thời gian đếm ngược: 4:59:59
+    let time = 4 * 3600 + 59 * 60 + 59; // 4:59:59
     const timerElements = document.querySelectorAll('.time-box');
     
-    // Nếu không tìm thấy đủ 3 ô (Giờ - Phút - Giây) thì dừng để không báo lỗi
-    if(timerElements.length < 3) return; 
+    if(timerElements.length < 3) return;
     
     setInterval(() => {
-        if (time <= 0) time = 24 * 3600; // Hết giờ thì tự động reset lại 24h
+        if (time <= 0) time = 24 * 3600; 
         time--;
         const h = Math.floor(time / 3600);
         const m = Math.floor((time % 3600) / 60);
@@ -63,7 +42,7 @@ function initCountdown() {
         timerElements[0].innerText = h.toString().padStart(2, '0');
         timerElements[1].innerText = m.toString().padStart(2, '0');
         timerElements[2].innerText = s.toString().padStart(2, '0');
-    }, 1000); // Lặp lại mỗi 1000ms (1 giây)
+    }, 1000);
 }
 
 // --- Accordion ---
@@ -95,6 +74,8 @@ function generateFakeReviews() {
     ];
     
     const list = document.getElementById('review-list');
+    if(!list) return;
+
     reviewData.forEach(r => {
         let imgsHtml = '';
         if (r.imgs.length > 0) {
@@ -118,13 +99,14 @@ function generateFakeReviews() {
     });
 }
 
-// --- Fake Live Orders (CRO) ---
+// --- Fake Live Orders (Toast) ---
 function startFakeOrdersToast() {
     const names = ["Nguyễn Văn A", "Trần Thị B", "Lê Văn C", "Phạm Thị D", "Hoàng Văn E"];
     const container = document.getElementById('toast-container');
-    
+    if(!container) return;
+
     setInterval(() => {
-        if(Math.random() > 0.6) return; // Randomize appearance
+        if(Math.random() > 0.6) return; 
         const name = names[Math.floor(Math.random() * names.length)];
         const time = Math.floor(Math.random() * 10) + 1;
         
@@ -137,30 +119,20 @@ function startFakeOrdersToast() {
     }, 8000);
 }
 
-// --- Cart & Checkout Modals ---
-let cartCount = 0;
-const price = 126840;
-
-function openCart() {
-    document.getElementById('cart-overlay').classList.add('active');
-    document.getElementById('cart-sidebar').classList.add('active');
-}
-function closeCart() {
-    document.getElementById('cart-overlay').classList.remove('active');
-    document.getElementById('cart-sidebar').classList.remove('active');
-}
-
+// --- Checkout Modal Logic ---
 function openCheckout() {
-    closeCart();
-    document.getElementById('checkout-overlay').classList.add('active');
-    document.getElementById('checkout-modal').classList.add('active');
-    // TikTok Pixel Event
-    if(window.ttq) ttq.track('InitiateCheckout');
+    const overlay = document.getElementById('checkout-overlay');
+    const modal = document.getElementById('checkout-modal');
+    if(overlay && modal) {
+        overlay.classList.add('active');
+        modal.classList.add('active');
+        // TikTok Pixel Event
+        if(window.ttq) ttq.track('InitiateCheckout');
+    } else {
+        alert('Lỗi: Không tìm thấy Form đặt hàng. Hãy kiểm tra lại HTML.');
+    }
 }
-function openCheckoutFromCart() {
-    if(cartCount === 0) { alert('Giỏ hàng trống!'); return; }
-    openCheckout();
-}
+
 function closeCheckout() {
     document.getElementById('checkout-overlay').classList.remove('active');
     document.getElementById('checkout-modal').classList.remove('active');
@@ -168,6 +140,7 @@ function closeCheckout() {
 
 function changeQty(delta) {
     const input = document.getElementById('checkout-qty');
+    if(!input) return;
     let val = parseInt(input.value) + delta;
     if (val < 1) val = 1;
     input.value = val;
@@ -177,83 +150,51 @@ function openChat() {
     alert("Chuyển hướng đến Zalo/Messenger...");
 }
 
-function loadCart() {
-    // Mock local storage load
-    cartCount = 1; 
-    document.getElementById('cart-badge').innerText = cartCount;
-    document.getElementById('cart-body').innerHTML = `
-        <div style="display:flex; gap:10px; border-bottom:1px solid #eee; padding-bottom:10px;">
-            <img src="assets/images/product-1.webp" width="60" style="border-radius:4px;">
-            <div>
-                <h4 style="font-size:13px;">Combo 1 Vòng 108 Hạt + Dầu</h4>
-                <div style="color:#ee4d2d; font-weight:bold; margin-top:5px;">126.840đ</div>
-                <div style="font-size:12px; color:#777;">SL: 1</div>
-            </div>
-        </div>
-    `;
-    document.getElementById('cart-total-price').innerText = "126.840đ";
-}
-
-// --- Form Submit & Google Apps Script ---
-document.getElementById('checkout-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const btn = document.getElementById('submit-order-btn');
-    btn.innerText = "ĐANG XỬ LÝ...";
-    btn.disabled = true;
-
-    const orderData = {
-        name: document.getElementById('cus-name').value,
-        phone: document.getElementById('cus-phone').value,
-        address: document.getElementById('cus-address').value,
-        province: document.getElementById('cus-province').value,
-        district: document.getElementById('cus-district').value,
-        ward: document.getElementById('cus-ward').value,
-        note: document.getElementById('cus-note').value,
-        product: "Combo Vòng Trầm Hương 108 Hạt",
-        price: 126840,
-        quantity: document.getElementById('checkout-qty').value
-    };
-
-    // Google App Script Web App URL
-    const scriptURL = 'YOUR_GOOGLE_SCRIPT_URL_HERE'; // Thay link API thật vào đây
-    
-    // Gửi mock thành công ngay lập tức để mô phỏng
-    setTimeout(() => {
-        if(window.ttq) {
-            ttq.track('CompletePayment');
-            ttq.track('Lead');
-        }
-        closeCheckout();
-        document.getElementById('success-overlay').classList.add('active');
-        document.getElementById('success-modal').classList.add('active');
-        btn.innerText = "XÁC NHẬN ĐẶT HÀNG";
-        btn.disabled = false;
-        document.getElementById('checkout-form').reset();
+// --- Form Submit ---
+const checkoutForm = document.getElementById('checkout-form');
+if(checkoutForm) {
+    checkoutForm.addEventListener('submit', function(e) {
+        e.preventDefault();
         
-        // Save to local storage for Admin dashboard mock
-        let orders = JSON.parse(localStorage.getItem('mockOrders') || '[]');
-        orderData.time = new Date().toLocaleString();
-        orders.push(orderData);
-        localStorage.setItem('mockOrders', JSON.stringify(orders));
+        const btn = document.getElementById('submit-order-btn');
+        btn.innerText = "ĐANG XỬ LÝ...";
+        btn.disabled = true;
 
-    }, 1500);
+        const orderData = {
+            name: document.getElementById('cus-name').value,
+            phone: document.getElementById('cus-phone').value,
+            address: document.getElementById('cus-address').value,
+            province: document.getElementById('cus-province').value,
+            district: document.getElementById('cus-district').value,
+            ward: document.getElementById('cus-ward').value,
+            note: document.getElementById('cus-note').value,
+            product: "Combo Vòng Trầm Hương 108 Hạt",
+            price: 126840,
+            quantity: document.getElementById('checkout-qty').value
+        };
 
-    /* MỞ COMMENT ĐOẠN NÀY ĐỂ KẾT NỐI VỚI GOOGLE SHEETS THỰC TẾ
-    fetch(scriptURL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData)
-    })
-    .then(response => { 
-        // handle success 
-    })
-    .catch(error => { 
-        // handle error 
+        const scriptURL = 'YOUR_GOOGLE_SCRIPT_URL_HERE'; // Thay link API
+        
+        setTimeout(() => {
+            if(window.ttq) {
+                ttq.track('CompletePayment');
+                ttq.track('Lead');
+            }
+            closeCheckout();
+            document.getElementById('success-overlay').classList.add('active');
+            document.getElementById('success-modal').classList.add('active');
+            btn.innerText = "XÁC NHẬN ĐẶT HÀNG";
+            btn.disabled = false;
+            checkoutForm.reset();
+            
+            let orders = JSON.parse(localStorage.getItem('mockOrders') || '[]');
+            orderData.time = new Date().toLocaleString();
+            orders.push(orderData);
+            localStorage.setItem('mockOrders', JSON.stringify(orders));
+
+        }, 1500);
     });
-    */
-});
+}
 
 function closeSuccess() {
     document.getElementById('success-overlay').classList.remove('active');
