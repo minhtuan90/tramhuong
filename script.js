@@ -12,113 +12,45 @@ function initSlider() {
     const slides = document.querySelectorAll('.slide');
     const counterText = document.getElementById('image-counter-text');
     let currentIndex = 0;
-    
     if(!track || slides.length === 0) return;
-
     setInterval(() => {
         currentIndex = (currentIndex + 1) % slides.length;
         track.style.transform = `translateX(-${currentIndex * 100}%)`;
-        
-        if(counterText) {
-            counterText.innerText = (currentIndex + 1) + '/' + slides.length;
-        }
+        if(counterText) counterText.innerText = (currentIndex + 1) + '/' + slides.length;
     }, 3000);
 }
 
 // --- Countdown Timer ---
 function initCountdown() {
-    let time = 00 * 3600 + 19 * 60 + 59; 
+    let time = 0 * 3600 + 19 * 60 + 59; 
     const timerElements = document.querySelectorAll('.time-box');
-    
     if(timerElements.length < 3) return;
-    
     setInterval(() => {
         if (time <= 0) time = 24 * 3600; 
         time--;
         const h = Math.floor(time / 3600);
         const m = Math.floor((time % 3600) / 60);
         const s = time % 60;
-        
         timerElements[0].innerText = h.toString().padStart(2, '0');
         timerElements[1].innerText = m.toString().padStart(2, '0');
         timerElements[2].innerText = s.toString().padStart(2, '0');
     }, 1000);
 }
 
-// --- Accordion ---
+// --- Các hàm hỗ trợ ---
 function initAccordion() {
     const items = document.querySelectorAll('.accordion-item');
     items.forEach(item => {
-        const header = item.querySelector('.accordion-header');
-        header.addEventListener('click', () => {
-            const isActive = item.classList.contains('active');
-            items.forEach(i => {
-                i.classList.remove('active');
-                i.querySelector('.icon').innerText = '+';
-            });
-            if (!isActive) {
-                item.classList.add('active');
-                item.querySelector('.icon').innerText = '-';
-            }
+        item.querySelector('.accordion-header').addEventListener('click', () => {
+            item.classList.toggle('active');
+            item.querySelector('.icon').innerText = item.classList.contains('active') ? '-' : '+';
         });
     });
 }
 
-// --- Fake Reviews ---
-function generateFakeReviews() {
-    const reviewData = [
-        { name: "V***📚", avatar: "V", text: "nhận hàng xong là phải quay lại feedback cho shop liền, đóng gọi hàng nó có tâm gì đâu á; vòng thơm nhẹ, rất ưng.", imgs: [] },
-        { name: "D***u V***", avatar: "D", text: "Hàng nhận nhanh ạ. Vòng đẹp nha, có 1 mùi hương nhẹ.", imgs: [] }
-    ];
-    
-    const list = document.getElementById('review-list');
-    if(!list) return;
-
-    reviewData.forEach(r => {
-        const html = `
-            <div class="review-item">
-                <div class="review-user">
-                    <div class="avatar">${r.avatar}</div>
-                    <div class="user-info">
-                        <div class="name">${r.name}</div>
-                        <div class="stars">⭐⭐⭐⭐⭐</div>
-                    </div>
-                </div>
-                <div class="review-text">${r.text}</div>
-            </div>
-        `;
-        list.insertAdjacentHTML('beforeend', html);
-    });
-}
-
-// --- Fake Live Orders (Toast) ---
-function startFakeOrdersToast() {
-    const names = ["Nguyễn Văn A", "Trần Thị B", "Lê Văn C"];
-    const container = document.getElementById('toast-container');
-    if(!container) return;
-
-    setInterval(() => {
-        if(Math.random() > 0.6) return; 
-        const name = names[Math.floor(Math.random() * names.length)];
-        const time = Math.floor(Math.random() * 10) + 1;
-        
-        const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.innerHTML = `<span><strong>${name}</strong> vừa đặt mua 1 Combo (${time} phút trước)</span>`;
-        
-        container.appendChild(toast);
-        setTimeout(() => toast.remove(), 4000);
-    }, 8000);
-}
-
-// --- Checkout Modal Logic ---
 function openCheckout() {
-    const overlay = document.getElementById('checkout-overlay');
-    const modal = document.getElementById('checkout-modal');
-    if(overlay && modal) {
-        overlay.classList.add('active');
-        modal.classList.add('active');
-    }
+    document.getElementById('checkout-overlay').classList.add('active');
+    document.getElementById('checkout-modal').classList.add('active');
 }
 
 function closeCheckout() {
@@ -126,19 +58,23 @@ function closeCheckout() {
     document.getElementById('checkout-modal').classList.remove('active');
 }
 
+function closeSuccess() {
+    document.getElementById('success-overlay').classList.remove('active');
+    document.getElementById('success-modal').classList.remove('active');
+    document.getElementById('checkout-overlay').classList.remove('active');
+    document.getElementById('checkout-modal').classList.remove('active');
+}
+
 function changeQty(delta) {
     const input = document.getElementById('checkout-qty');
-    if(!input) return;
     let val = parseInt(input.value) + delta;
     if (val < 1) val = 1;
     input.value = val;
 }
 
-function openChat() {
-    alert("Chuyển hướng đến Zalo/Messenger...");
-}
+function openChat() { alert("Chuyển hướng đến Zalo/Messenger..."); }
 
-// --- Form Submit ---
+// --- Form Submit (Đã sửa lỗi cấu trúc) ---
 const checkoutForm = document.getElementById('checkout-form');
 if(checkoutForm) {
     checkoutForm.addEventListener('submit', function(e) {
@@ -146,22 +82,7 @@ if(checkoutForm) {
         const btn = document.getElementById('submit-order-btn');
         btn.innerText = "ĐANG XỬ LÝ...";
         btn.disabled = true;
-function closeSuccess() {
-    // Ẩn lớp phủ (Overlay)
-    const overlay = document.getElementById('success-overlay');
-    if (overlay) overlay.classList.remove('active');
-    
-    // Ẩn bảng thông báo thành công (Modal)
-    const successModal = document.getElementById('success-modal');
-    if (successModal) successModal.classList.remove('active');
-    
-    // Đảm bảo nếu còn form đặt hàng đang hiện thì ẩn luôn
-    const checkoutOverlay = document.getElementById('checkout-overlay');
-    const checkoutModal = document.getElementById('checkout-modal');
-    if (checkoutOverlay) checkoutOverlay.classList.remove('active');
-    if (checkoutModal) checkoutModal.classList.remove('active');
-}
-        // Đã cập nhật lại để khớp với HTML mới
+
         const orderData = {
             name: document.getElementById('cus-name').value,
             phone: document.getElementById('cus-phone').value,
@@ -171,35 +92,23 @@ function closeSuccess() {
             quantity: document.getElementById('checkout-qty').value
         };
 
-     // Đảm bảo scriptURL là link MỚI NHẤT bạn vừa copy ở Bước 1
-const scriptURL = 'https://script.google.com/macros/s/ĐOẠN_MÃ_CỦA_BẠN/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbydEBFsTt2S2GfMV0nR5mRUzlethJPiKgqQWGRJJxdHaK-l5WN21ixPuApJQFyd8CLB/exec';
 
-fetch(scriptURL, {
-    method: 'POST',
-    mode: 'no-cors', // Rất quan trọng để không bị chặn CORS
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(orderData)
-})
-.then(() => {
-    // Nếu chạy đến đây là thành công 100%
-    console.log("Đã gửi dữ liệu thành công!");
-})
-.catch(error => {
-    console.error("Lỗi kết nối:", error);
-});
+        fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData)
+        })
+        .then(() => console.log("Đã gửi đơn hàng!"))
+        .catch(err => console.error("Lỗi:", err))
+        .finally(() => {
+            btn.innerText = "XÁC NHẬN ĐẶT HÀNG";
+            btn.disabled = false;
             closeCheckout();
             document.getElementById('success-overlay').classList.add('active');
             document.getElementById('success-modal').classList.add('active');
-            btn.innerText = "XÁC NHẬN ĐẶT HÀNG";
-            btn.disabled = false;
             checkoutForm.reset();
-            
-            // Xử lý lưu mộc cho Admin (nếu bạn vẫn dùng trang Admin tĩnh)
-            let orders = JSON.parse(localStorage.getItem('mockOrders') || '[]');
-            orderData.time = new Date().toLocaleString();
-            orders.push(orderData);
-            localStorage.setItem('mockOrders', JSON.stringify(orders));
-
-        }, 1500);
+        });
     });
 }
