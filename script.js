@@ -27,7 +27,7 @@ function initSlider() {
 
 // --- Countdown Timer ---
 function initCountdown() {
-    let time = 4 * 3600 + 59 * 60 + 59; 
+    let time = 0 * 3600 + 19 * 60 + 59; 
     const timerElements = document.querySelectorAll('.time-box');
     
     if(timerElements.length < 3) return;
