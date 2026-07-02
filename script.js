@@ -48,55 +48,71 @@ document.addEventListener('DOMContentLoaded', () => {
     try { initCountdown(); } catch(e) { console.error(e); }
 });
 
-// HÀM MENU FAQ (PHIÊN BẢN CHUẨN TRỊ LỖI BỊ CSS CHE KHUẤT)
+// ==========================================
+// HÀM MENU FAQ (PHIÊN BẢN CHUYÊN NGHIỆP - FIX LỖI LADIPAGE 100%)
+// ==========================================
 function initAccordion() {
-    // 1. Bắt thẳng vào thẻ bọc ngoài cùng của từng câu hỏi
+    // 1. TIÊM CSS TRỰC TIẾP VÀO WEB ĐỂ PHÁ VỠ MỌI LỚP TÀNG HÌNH
+    if (!document.getElementById('fix-accordion-css')) {
+        const style = document.createElement('style');
+        style.id = 'fix-accordion-css';
+        style.innerHTML = `
+            /* Trạng thái mặc định: Ép ẩn hoàn toàn */
+            .accordion-content {
+                display: none !important; 
+            }
+            /* Trạng thái khi click: Mở bung ra bất chấp CSS cũ */
+            .accordion-content.mo-bung-ra {
+                display: block !important;
+                height: auto !important;
+                max-height: 2000px !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+                overflow: visible !important;
+                margin-top: 10px !important;
+                pointer-events: auto !important;
+            }
+            .accordion-header {
+                cursor: pointer !important;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // 2. TÌM VÀ GẮN SỰ KIỆN CLICK AN TOÀN
     const items = document.querySelectorAll('.accordion-item');
     
     items.forEach(item => {
         const header = item.querySelector('.accordion-header');
         const content = item.querySelector('.accordion-content');
-        const icon = item.querySelector('.icon');
+        const icon = header ? header.querySelector('.icon') : null;
         
         if (header && content) {
-            // Ẩn nội dung khi mới tải trang
-            content.style.display = 'none';
-            
-            header.addEventListener('click', function(e) {
+            // Dùng onclick trực tiếp để đè lên các sự kiện click ảo của nền tảng
+            header.onclick = function(e) {
                 e.preventDefault(); 
+                e.stopPropagation(); // Đòn quyết định: Cấm LadiPage can thiệp vào cú click này
                 
-                // Kiểm tra xem menu đang đóng hay mở
-                const isOpen = content.style.display === 'block';
-
-                // Tùy chọn: Tự động đóng các câu hỏi khác khi mở câu hỏi này
-                items.forEach(otherItem => {
-                    const otherContent = otherItem.querySelector('.accordion-content');
-                    const otherIcon = otherItem.querySelector('.icon');
-                    if (otherContent) {
-                        otherContent.style.display = 'none';
-                        otherItem.style.height = 'auto'; 
-                        otherItem.classList.remove('active');
-                        if (otherIcon) otherIcon.innerText = '+';
-                    }
+                const dangDong = !content.classList.contains('mo-bung-ra');
+                
+                // Bước A: Đóng tất cả các câu hỏi khác lại
+                document.querySelectorAll('.accordion-content').forEach(c => {
+                    c.classList.remove('mo-bung-ra');
                 });
-
-                // Bật/tắt câu hỏi hiện tại
-                if (!isOpen) {
-                    content.style.display = 'block';
-                    // Ép thẻ cha bung chiều cao và tràn viền để không che chữ
-                    item.style.height = 'auto';
-                    item.style.overflow = 'visible';
-                    item.classList.add('active');
-                    if (icon) icon.innerText = '-'; 
-                } else {
-                    content.style.display = 'none';
-                    item.classList.remove('active');
-                    if (icon) icon.innerText = '+'; 
+                document.querySelectorAll('.accordion-header .icon').forEach(i => {
+                    i.innerText = '+';
+                });
+                
+                // Bước B: Nếu câu mình vừa bấm đang đóng, thì mở nó ra
+                if (dangDong) {
+                    content.classList.add('mo-bung-ra');
+                    if (icon) icon.innerText = '-';
                 }
-            });
+            };
         }
     });
 }
+
 
                     // ĐÓNG MENU
                     content.style.display = 'none';
