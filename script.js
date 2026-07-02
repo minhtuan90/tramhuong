@@ -146,7 +146,21 @@ if(checkoutForm) {
         const btn = document.getElementById('submit-order-btn');
         btn.innerText = "ĐANG XỬ LÝ...";
         btn.disabled = true;
-
+function closeSuccess() {
+    // Ẩn lớp phủ (Overlay)
+    const overlay = document.getElementById('success-overlay');
+    if (overlay) overlay.classList.remove('active');
+    
+    // Ẩn bảng thông báo thành công (Modal)
+    const successModal = document.getElementById('success-modal');
+    if (successModal) successModal.classList.remove('active');
+    
+    // Đảm bảo nếu còn form đặt hàng đang hiện thì ẩn luôn
+    const checkoutOverlay = document.getElementById('checkout-overlay');
+    const checkoutModal = document.getElementById('checkout-modal');
+    if (checkoutOverlay) checkoutOverlay.classList.remove('active');
+    if (checkoutModal) checkoutModal.classList.remove('active');
+}
         // Đã cập nhật lại để khớp với HTML mới
         const orderData = {
             name: document.getElementById('cus-name').value,
