@@ -157,7 +157,7 @@ if(checkoutForm) {
             quantity: document.getElementById('checkout-qty').value
         };
 
-        const scriptURL = 'YOUR_GOOGLE_SCRIPT_URL_HERE'; // Thay link API thật vào đây
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbysguUNQ1TQTV_5JE-tgnTzaNAZVscUnzG15G5nCLRB1u5eMoy0_62IuGBppEJA4FEX/exec'; // Thay link API thật vào đây
         
         setTimeout(() => {
             if(window.ttq) {
