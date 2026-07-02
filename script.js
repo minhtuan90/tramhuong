@@ -1,10 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
-    initSlider();
-    initCountdown();
-    initAccordion();
-    generateFakeReviews();
-    startFakeOrdersToast();
-    loadCart();
+    // Bọc trong try-catch để nếu 1 cái lỗi, các hiệu ứng khác vẫn chạy bình thường
+    try { initSlider(); } catch(e) { console.log(e); }
+    try { initCountdown(); } catch(e) { console.log(e); }
+    try { initAccordion(); } catch(e) { console.log(e); }
+    try { generateFakeReviews(); } catch(e) { console.log(e); }
+    try { startFakeOrdersToast(); } catch(e) { console.log(e); }
+    try { loadCart(); } catch(e) { console.log(e); }
 });
 
 // --- Slider Logic ---
