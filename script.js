@@ -6,6 +6,11 @@ function openCheckout() {
     const modal = document.getElementById('checkout-modal');
     if(overlay) overlay.classList.add('active');
     if(modal) modal.classList.add('active');
+
+    // BÁO CÁO TIKTOK: KHÁCH HÀNG BẮT ĐẦU MỞ FORM MUA
+    if (typeof ttq !== 'undefined') {
+        ttq.track('InitiateCheckout');
+    }
 }
 
 function closeCheckout() {
@@ -30,6 +35,10 @@ function changeQty(delta) {
     input.value = val < 1 ? 1 : val;
 }
 
+function openChat() {
+    alert("Đang chuyển hướng đến Zalo/Messenger...");
+}
+
 // ==========================================
 // 2. KHỞI TẠO HIỆU ỨNG (Menu, Slider, Timer)
 // ==========================================
@@ -39,42 +48,34 @@ document.addEventListener('DOMContentLoaded', () => {
     try { initCountdown(); } catch(e) { console.error(e); }
 });
 
-// HÀM MENU ĐÃ ĐƯỢC VIẾT LẠI DỰA TRÊN 'accordion-content' CỦA BẠN
+// HÀM MENU FAQ (ĐÃ ĐƯỢC CHỈNH SỬA CHUẨN 100%)
 function initAccordion() {
-    // Đã bổ sung thêm các tên class phổ biến nhất của phần FAQ (faq-content, faq-answer, answer)
-    const contents = document.querySelectorAll('.accordion-content, .faq-content, .faq-answer, .answer');
+    const contents = document.querySelectorAll('.accordion-content');
     
     contents.forEach(content => {
-        // Lấy thẻ tiêu đề nằm ngay trên phần nội dung
-        const header = content.previousElementSibling;
+        let header = content.previousElementSibling;
         
         if (header) {
             header.style.cursor = 'pointer';
             
-            // Ẩn nội dung lúc mới tải trang
             if (!content.classList.contains('active')) {
                 content.style.display = 'none';
             }
             
-            // Gắn sự kiện Click
-            header.onclick = function() {
-                // Tùy chọn: Đóng các câu hỏi khác khi mở câu hỏi này
-                contents.forEach(c => {
-                    if (c !== content) {
-                        c.style.display = 'none';
-                        c.classList.remove('active');
-                    }
-                });
+            header.addEventListener('click', function(e) {
+                e.preventDefault(); 
+                const icon = header.querySelector('.icon');
 
-                // Bật/tắt câu hỏi hiện tại
                 if (content.style.display === 'none' || content.style.display === '') {
                     content.style.display = 'block';
                     content.classList.add('active');
+                    if (icon) icon.innerText = '-'; 
                 } else {
                     content.style.display = 'none';
                     content.classList.remove('active');
+                    if (icon) icon.innerText = '+'; 
                 }
-            };
+            });
         }
     });
 }
@@ -126,7 +127,7 @@ if (checkoutForm) {
         const address = addressNode ? addressNode.value : "";
         const qty = qtyNode ? qtyNode.value : 1;
 
-        // 👉 NHỚ DÁN LẠI LINK API CỦA BẠN VÀO ĐÂY:
+        // 👉 DÁN LẠI LINK API GOOGLE APPS SCRIPT CỦA BẠN VÀO ĐÂY:
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwRi0gDFQgXDkZLY5ethhg-1NGT3He-SZW06xtrg9Et-2H8S0fQK7GsNEN4xN9ZexJ2Iw/exec';
         
         const finalURL = `${scriptURL}?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&address=${encodeURIComponent(address)}&product=VongTram&price=179000&quantity=${qty}`;
@@ -141,6 +142,15 @@ if (checkoutForm) {
             
             if(btn) { btn.innerText = "XÁC NHẬN ĐẶT HÀNG"; btn.disabled = false; }
             checkoutForm.reset();
+
+            // BÁO CÁO TIKTOK: MUA HÀNG THÀNH CÔNG
+            if (typeof ttq !== 'undefined') {
+                ttq.track('CompletePayment', {
+                    content_name: 'Vòng trầm hương 108 Hạt', 
+                    value: 179000,                           
+                    currency: 'VND'                          
+                });
+            }
         })
         .catch(err => {
             alert("Lỗi kết nối. Vui lòng thử lại!");
