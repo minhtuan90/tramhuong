@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try { initCountdown(); } catch(e) { console.error(e); }
 });
 
-// HÀM MENU FAQ (ĐÃ ĐƯỢC CHỈNH SỬA CHUẨN 100%)
+// HÀM MENU FAQ (ĐÃ THÊM LỆNH ÉP HIỂN THỊ CHỐNG LỖI CSS)
 function initAccordion() {
     const contents = document.querySelectorAll('.accordion-content');
     
@@ -67,10 +67,17 @@ function initAccordion() {
                 const icon = header.querySelector('.icon');
 
                 if (content.style.display === 'none' || content.style.display === '') {
+                    // CÁC LỆNH ÉP HIỂN THỊ XUYÊN THỦNG MỌI CSS
                     content.style.display = 'block';
+                    content.style.opacity = '1';
+                    content.style.visibility = 'visible';
+                    content.style.height = 'auto';
+                    content.style.maxHeight = 'none';
+                    
                     content.classList.add('active');
                     if (icon) icon.innerText = '-'; 
                 } else {
+                    // ĐÓNG MENU
                     content.style.display = 'none';
                     content.classList.remove('active');
                     if (icon) icon.innerText = '+'; 
