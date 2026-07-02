@@ -47,11 +47,14 @@ function initSlider() {
 
 // --- Countdown Timer ---
 function initCountdown() {
-    let time = 4 * 3600 + 59 * 60 + 59; // 4:59:59
+    let time = 4 * 3600 + 59 * 60 + 59; // Thời gian đếm ngược: 4:59:59
     const timerElements = document.querySelectorAll('.time-box');
     
+    // Nếu không tìm thấy đủ 3 ô (Giờ - Phút - Giây) thì dừng để không báo lỗi
+    if(timerElements.length < 3) return; 
+    
     setInterval(() => {
-        if (time <= 0) time = 24 * 3600; // reset
+        if (time <= 0) time = 24 * 3600; // Hết giờ thì tự động reset lại 24h
         time--;
         const h = Math.floor(time / 3600);
         const m = Math.floor((time % 3600) / 60);
@@ -60,7 +63,7 @@ function initCountdown() {
         timerElements[0].innerText = h.toString().padStart(2, '0');
         timerElements[1].innerText = m.toString().padStart(2, '0');
         timerElements[2].innerText = s.toString().padStart(2, '0');
-    }, 1000);
+    }, 1000); // Lặp lại mỗi 1000ms (1 giây)
 }
 
 // --- Accordion ---
