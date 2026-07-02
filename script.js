@@ -171,13 +171,22 @@ function closeSuccess() {
             quantity: document.getElementById('checkout-qty').value
         };
 
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwpJ7jgfMiUhnbWfCR7irhrMdbrvfTaUrnI_0HJVVdN6DrozcsM2ubZyP4cqX-Tfh2d/exec'; // Thay link API thật vào đây
-        
-        setTimeout(() => {
-            if(window.ttq) {
-                ttq.track('CompletePayment');
-                ttq.track('Lead');
-            }
+     // Đảm bảo scriptURL là link MỚI NHẤT bạn vừa copy ở Bước 1
+const scriptURL = 'https://script.google.com/macros/s/ĐOẠN_MÃ_CỦA_BẠN/exec';
+
+fetch(scriptURL, {
+    method: 'POST',
+    mode: 'no-cors', // Rất quan trọng để không bị chặn CORS
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(orderData)
+})
+.then(() => {
+    // Nếu chạy đến đây là thành công 100%
+    console.log("Đã gửi dữ liệu thành công!");
+})
+.catch(error => {
+    console.error("Lỗi kết nối:", error);
+});
             closeCheckout();
             document.getElementById('success-overlay').classList.add('active');
             document.getElementById('success-modal').classList.add('active');
