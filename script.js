@@ -1,5 +1,5 @@
 // ==========================================
-// 1. CÁC HÀM GIAO DIỆN CHÍNH
+// 1. CÁC HÀM GIAO DIỆN CHÍNH (NÚT BẤM, MODAL)
 // ==========================================
 function openCheckout() {
     const overlay = document.getElementById('checkout-overlay');
@@ -7,10 +7,8 @@ function openCheckout() {
     if(overlay) overlay.classList.add('active');
     if(modal) modal.classList.add('active');
 
-    // BÁO CÁO TIKTOK: KHÁCH HÀNG BẮT ĐẦU MỞ FORM MUA
-    if (typeof ttq !== 'undefined') {
-        ttq.track('InitiateCheckout');
-    }
+    // Báo cáo TikTok: Khách bấm nút mua hàng
+    if (typeof ttq !== 'undefined') ttq.track('InitiateCheckout');
 }
 
 function closeCheckout() {
@@ -35,95 +33,72 @@ function changeQty(delta) {
     input.value = val < 1 ? 1 : val;
 }
 
-function openChat() {
-    alert("Đang chuyển hướng đến Zalo/Messenger...");
-}
-
 // ==========================================
-// 2. KHỞI TẠO HIỆU ỨNG (Menu, Slider, Timer)
+// 2. KHỞI TẠO TỰ ĐỘNG KHI TẢI TRANG
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    try { initAccordion(); } catch(e) { console.error(e); }
-    try { initSlider(); } catch(e) { console.error(e); }
-    try { initCountdown(); } catch(e) { console.error(e); }
+    // Dùng try-catch để an toàn tuyệt đối, 1 cái lỗi không làm liệt cái khác
+    try { initAccordion(); } catch(e) { console.error("Lỗi FAQ:", e); }
+    try { initSlider(); } catch(e) { console.error("Lỗi Slider:", e); }
+    try { initCountdown(); } catch(e) { console.error("Lỗi Countdown:", e); }
 });
 
 // ==========================================
-// HÀM MENU FAQ (PHIÊN BẢN CHUYÊN NGHIỆP - FIX LỖI LADIPAGE 100%)
+// 3. HÀM MENU FAQ (CHUYÊN NGHIỆP - FIX LỖI ẨN CHỮ)
 // ==========================================
 function initAccordion() {
-    // 1. TIÊM CSS TRỰC TIẾP VÀO WEB ĐỂ PHÁ VỠ MỌI LỚP TÀNG HÌNH
-    if (!document.getElementById('fix-accordion-css')) {
+    // Tiêm CSS quyền lực cao nhất vào web để ép hiện chữ
+    if (!document.getElementById('faq-safe-css')) {
         const style = document.createElement('style');
-        style.id = 'fix-accordion-css';
+        style.id = 'faq-safe-css';
         style.innerHTML = `
-            /* Trạng thái mặc định: Ép ẩn hoàn toàn */
-            .accordion-content {
-                display: none !important; 
-            }
-            /* Trạng thái khi click: Mở bung ra bất chấp CSS cũ */
-            .accordion-content.mo-bung-ra {
-                display: block !important;
-                height: auto !important;
-                max-height: 2000px !important;
-                opacity: 1 !important;
+            .accordion-content { display: none !important; transition: all 0.3s ease; }
+            .accordion-content.hien-chu { 
+                display: block !important; 
+                height: auto !important; 
+                opacity: 1 !important; 
                 visibility: visible !important;
-                overflow: visible !important;
                 margin-top: 10px !important;
-                pointer-events: auto !important;
-            }
-            .accordion-header {
-                cursor: pointer !important;
             }
         `;
         document.head.appendChild(style);
     }
 
-    // 2. TÌM VÀ GẮN SỰ KIỆN CLICK AN TOÀN
     const items = document.querySelectorAll('.accordion-item');
-    
+    if(items.length === 0) return;
+
     items.forEach(item => {
         const header = item.querySelector('.accordion-header');
         const content = item.querySelector('.accordion-content');
-        const icon = header ? header.querySelector('.icon') : null;
         
         if (header && content) {
-            // Dùng onclick trực tiếp để đè lên các sự kiện click ảo của nền tảng
-            header.onclick = function(e) {
-                e.preventDefault(); 
-                e.stopPropagation(); // Đòn quyết định: Cấm LadiPage can thiệp vào cú click này
+            header.addEventListener('click', function(e) {
+                e.preventDefault();
                 
-                const dangDong = !content.classList.contains('mo-bung-ra');
-                
-                // Bước A: Đóng tất cả các câu hỏi khác lại
+                const icon = header.querySelector('.icon');
+                const isClosed = !content.classList.contains('hien-chu');
+
+                // Đóng tất cả các menu khác
                 document.querySelectorAll('.accordion-content').forEach(c => {
-                    c.classList.remove('mo-bung-ra');
+                    c.classList.remove('hien-chu');
                 });
                 document.querySelectorAll('.accordion-header .icon').forEach(i => {
                     i.innerText = '+';
                 });
-                
-                // Bước B: Nếu câu mình vừa bấm đang đóng, thì mở nó ra
-                if (dangDong) {
-                    content.classList.add('mo-bung-ra');
-                    if (icon) icon.innerText = '-';
-                }
-            };
-        }
-    });
-}
 
-
-                    // ĐÓNG MENU
-                    content.style.display = 'none';
-                    content.classList.remove('active');
-                    if (icon) icon.innerText = '+'; 
+                // Mở menu được click
+                if (isClosed) {
+                    content.classList.add('hien-chu');
+                    if(icon) icon.innerText = '-';
                 }
             });
         }
     });
 }
 
+// ==========================================
+// 4. SLIDER VÀ ĐẾM NGƯỢC
+// ==========================================
 function initSlider() {
     const track = document.getElementById('slider-track');
     const slides = document.querySelectorAll('.slide');
@@ -132,7 +107,7 @@ function initSlider() {
     let index = 0;
     setInterval(() => {
         index = (index + 1) % slides.length;
-        track.style.transform = `translateX(-${index * 100}%)`;
+        track.style.transform = 'translateX(-' + (index * 100) + '%)';
     }, 3000);
 }
 
@@ -151,7 +126,7 @@ function initCountdown() {
 }
 
 // ==========================================
-// 3. XỬ LÝ ĐẶT HÀNG QUA GOOGLE SHEETS
+// 5. GỬI ĐƠN HÀNG VỀ GOOGLE SHEETS
 // ==========================================
 const checkoutForm = document.getElementById('checkout-form');
 if (checkoutForm) {
@@ -166,15 +141,15 @@ if (checkoutForm) {
         const addressNode = document.getElementById('cus-address');
         const qtyNode = document.getElementById('checkout-qty');
 
-        const name = nameNode ? nameNode.value : "";
-        const phone = phoneNode ? phoneNode.value : "";
-        const address = addressNode ? addressNode.value : "";
+        const name = nameNode ? nameNode.value : "Khách";
+        const phone = phoneNode ? phoneNode.value : "Trống";
+        const address = addressNode ? addressNode.value : "Trống";
         const qty = qtyNode ? qtyNode.value : 1;
 
-        // 👉 DÁN LẠI LINK API GOOGLE APPS SCRIPT CỦA BẠN VÀO ĐÂY:
+        // 👉 CHỈ CẦN DÁN LINK GOOGLE SCRIPT CỦA BẠN VÀO DÒNG DƯỚI ĐÂY:
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwRi0gDFQgXDkZLY5ethhg-1NGT3He-SZW06xtrg9Et-2H8S0fQK7GsNEN4xN9ZexJ2Iw/exec';
         
-        const finalURL = `${scriptURL}?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&address=${encodeURIComponent(address)}&product=VongTram&price=179000&quantity=${qty}`;
+        const finalURL = scriptURL + '?name=' + encodeURIComponent(name) + '&phone=' + encodeURIComponent(phone) + '&address=' + encodeURIComponent(address) + '&product=VongTram&price=179000&quantity=' + qty;
 
         fetch(finalURL, { method: 'GET', mode: 'no-cors' })
         .then(() => {
@@ -187,7 +162,7 @@ if (checkoutForm) {
             if(btn) { btn.innerText = "XÁC NHẬN ĐẶT HÀNG"; btn.disabled = false; }
             checkoutForm.reset();
 
-            // BÁO CÁO TIKTOK: MUA HÀNG THÀNH CÔNG
+            // Báo cáo TikTok Pixel: Hoàn tất thanh toán
             if (typeof ttq !== 'undefined') {
                 ttq.track('CompletePayment', {
                     content_name: 'Vòng trầm hương 108 Hạt', 
@@ -197,7 +172,7 @@ if (checkoutForm) {
             }
         })
         .catch(err => {
-            alert("Lỗi kết nối. Vui lòng thử lại!");
+            alert("Lỗi kết nối. Vui lòng kiểm tra mạng và thử lại!");
             if(btn) { btn.innerText = "XÁC NHẬN ĐẶT HÀNG"; btn.disabled = false; }
         });
     });
