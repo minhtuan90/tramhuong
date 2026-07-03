@@ -153,7 +153,8 @@ function initCountdown() {
 }
 
 // ==========================================
-// 3. XỬ LÝ ĐẶT HÀNG GỬI VỀ GOOGLE SHEETS
+// ==========================================
+// 3. XỬ LÝ ĐẶT HÀNG VÀ CHUYỂN HƯỚNG SANG TRANG CẢM ƠN
 // ==========================================
 const checkoutForm = document.getElementById('checkout-form');
 if (checkoutForm) {
@@ -168,22 +169,23 @@ if (checkoutForm) {
         const address = document.getElementById('cus-address').value;
         const qty = document.getElementById('checkout-qty').value;
 
-        // 🛑 BẠN HÃY DÁN LINK WEB APP CHUẨN CỦA BẠN VÀO ĐÂY
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwRi0gDFQgXDkZLY5ethhg-1NGT3He-SZW06xtrg9Et-2H8S0fQK7GsNEN4xN9ZexJ2Iw/exec';
+        // 👉 Link Google Apps Script của bạn
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwRi0gDFQgXDkZLY5ethhg-1NGT3He-SZW06xtrg9Et-2H8S0fQK7GsNEN4xN9ZexJ2Iw/exec'; 
         
         const finalURL = scriptURL + '?name=' + encodeURIComponent(name) + '&phone=' + encodeURIComponent(phone) + '&address=' + encodeURIComponent(address) + '&product=VongTram&price=179000&quantity=' + qty;
 
+        // Gửi dữ liệu đi
         fetch(finalURL, { method: 'GET', mode: 'no-cors' })
         .then(() => {
-            closeCheckout();
-            const sOverlay = document.getElementById('success-overlay');
-            const sModal = document.getElementById('success-modal');
-            if (sOverlay) sOverlay.classList.add('active');
-            if (sModal) sModal.classList.add('active');
-            
+            // Ngay khi gửi thành công về Sheet -> Chuyển thẳng sang trang Cảm ơn
+            window.location.href = "thankyou.html";
+        })
+        .catch(err => {
+            alert("Lỗi kết nối mạng, dữ liệu tạm thời chưa được gửi. Vui lòng kiểm tra và thử lại!");
             if (btn) { btn.innerText = "XÁC NHẬN ĐẶT HÀNG"; btn.disabled = false; }
-            checkoutForm.reset();
-
+        });
+    });
+}
             // TikTok Pixel: Báo cáo chuyển đổi mua hàng thành công (CompletePayment)
             if (typeof ttq !== 'undefined') {
                 ttq.track('CompletePayment', {
