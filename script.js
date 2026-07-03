@@ -48,22 +48,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // HÀM FAQ ĐÃ ĐƯỢC ÉP KIỂU HIỂN THỊ CHỐNG XUNG ĐỘT CSS
 function initAccordion() {
+    // 1. Tiêm CSS "quyền lực tuyệt đối" để ép hiển thị xuyên qua mọi lớp khóa của giao diện
     if (!document.getElementById('faq-injected-css')) {
         const style = document.createElement('style');
         style.id = 'faq-injected-css';
         style.innerHTML = `
-            .accordion-content { display: none !important; transition: all 0.2s ease; }
+            /* Ép thẻ cha không được khóa chiều cao, cho phép tràn nội dung */
+            .accordion-item {
+                height: auto !important;
+                overflow: visible !important;
+            }
+            /* Ẩn nội dung khi chưa click */
+            .accordion-content { 
+                display: none !important; 
+            }
+            /* Mở bung nội dung khi click */
             .accordion-content.show-active { 
                 display: block !important; 
                 height: auto !important; 
                 opacity: 1 !important; 
                 visibility: visible !important;
-                margin-top: 8px !important;
+                margin-top: 10px !important;
+                padding-bottom: 10px !important;
+            }
+            /* Ép hiển thị cả thẻ <p> bên trong đề phòng bị ẩn */
+            .accordion-content.show-active p {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                color: #333 !important; /* Đảm bảo chữ không bị trùng màu nền */
             }
         `;
         document.head.appendChild(style);
     }
 
+    // 2. Xử lý click an toàn tuyệt đối
     const items = document.querySelectorAll('.accordion-item');
     items.forEach(item => {
         const header = item.querySelector('.accordion-header');
@@ -71,15 +90,18 @@ function initAccordion() {
         
         if (header && content) {
             header.onclick = function(e) {
+                // Chặn đứng các can thiệp từ mã ngầm của hệ thống gốc
                 e.preventDefault();
+                e.stopPropagation(); 
+
                 const icon = header.querySelector('.icon');
                 const isOpening = !content.classList.contains('show-active');
 
-                // Đóng hết các ô câu hỏi khác
+                // Đóng tất cả các ô câu hỏi khác lại
                 document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('show-active'));
                 document.querySelectorAll('.accordion-header .icon').forEach(i => i.innerText = '+');
 
-                // Mở câu hỏi được chọn
+                // Mở ô câu hỏi hiện tại
                 if (isOpening) {
                     content.classList.add('show-active');
                     if (icon) icon.innerText = '-';
@@ -88,7 +110,6 @@ function initAccordion() {
         }
     });
 }
-
 function initSlider() {
     const track = document.getElementById('slider-track');
     const slides = document.querySelectorAll('.slide');
