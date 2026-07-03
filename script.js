@@ -7,7 +7,6 @@ function openCheckout() {
     if (overlay) overlay.classList.add('active');
     if (modal) modal.classList.add('active');
 
-    // TikTok Pixel: Báo cáo bắt đầu điền thông tin mua hàng
     if (typeof ttq !== 'undefined') ttq.track('InitiateCheckout');
 }
 
@@ -38,7 +37,7 @@ function openChat() {
 }
 
 // ==========================================
-// 2. TỰ ĐỘNG KHỞI TẠO CÁC HIỆU ỨNG KHI TRANG SẴN SÀNG
+// 2. KHỞI TẠO TỰ ĐỘNG KHI TẢI TRANG (CHỐNG SẬP)
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     try { initAccordion(); } catch(e) { console.error("FAQ Error:", e); }
@@ -47,19 +46,14 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==========================================
-// HÀM FAQ ĐÃ ĐƯỢC NÂNG CẤP ĐỂ CHỐNG LỖI CẮT CHỮ
+// 3. HÀM MENU FAQ (CHUẨN 100% - CHỐNG CẮT CHỮ)
 // ==========================================
 function initAccordion() {
     if (!document.getElementById('faq-injected-css-v2')) {
         const style = document.createElement('style');
         style.id = 'faq-injected-css-v2';
         style.innerHTML = `
-            /* Bắt toàn bộ khối FAQ phải tự do giãn nở */
-            .accordion { 
-                display: block !important; 
-                height: auto !important; 
-            }
-            /* Ép từng câu hỏi bung chiều cao đẩy các câu dưới xuống */
+            .accordion { display: block !important; height: auto !important; }
             .accordion-item {
                 display: block !important;
                 height: auto !important;
@@ -67,30 +61,25 @@ function initAccordion() {
                 overflow: visible !important;
                 position: relative !important;
             }
-            /* Đảm bảo câu hỏi có nền trắng để không bị chữ đè lên */
             .accordion-header {
                 background-color: #fff !important;
                 position: relative !important;
                 z-index: 2 !important;
             }
-            .accordion-content { 
-                display: none !important; 
-            }
-            /* Định dạng lại khoảng trống khi câu trả lời mở ra */
+            .accordion-content { display: none !important; }
             .accordion-content.show-active {
                 display: block !important;
                 height: auto !important;
-                max-height: none !important; /* Xóa bỏ mọi cản trở chiều cao */
-                padding: 10px 0 20px 0 !important; /* Tạo viền trên dưới cho đẹp */
+                max-height: none !important;
+                padding: 10px 0 20px 0 !important;
                 opacity: 1 !important;
                 visibility: visible !important;
             }
-            /* Ép chữ tự động xuống dòng và dãn dòng vừa mắt */
             .accordion-content.show-active p {
                 display: block !important;
-                white-space: normal !important; /* Cho phép rớt dòng */
+                white-space: normal !important;
                 word-wrap: break-word !important; 
-                line-height: 1.6 !important; /* Dãn dòng chuẩn để dễ đọc */
+                line-height: 1.6 !important;
                 color: #333 !important;
                 margin: 0 !important;
             }
@@ -124,6 +113,10 @@ function initAccordion() {
         }
     });
 }
+
+// ==========================================
+// 4. SLIDER VÀ ĐẾM NGƯỢC
+// ==========================================
 function initSlider() {
     const track = document.getElementById('slider-track');
     const slides = document.querySelectorAll('.slide');
@@ -153,8 +146,7 @@ function initCountdown() {
 }
 
 // ==========================================
-// ==========================================
-// 3. XỬ LÝ ĐẶT HÀNG VÀ CHUYỂN HƯỚNG SANG TRANG CẢM ƠN
+// 5. GỬI DATA VỀ GOOGLE SHEETS VÀ CHUYỂN TRANG
 // ==========================================
 const checkoutForm = document.getElementById('checkout-form');
 if (checkoutForm) {
@@ -169,31 +161,15 @@ if (checkoutForm) {
         const address = document.getElementById('cus-address').value;
         const qty = document.getElementById('checkout-qty').value;
 
-        // 👉 Link Google Apps Script của bạn
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwRi0gDFQgXDkZLY5ethhg-1NGT3He-SZW06xtrg9Et-2H8S0fQK7GsNEN4xN9ZexJ2Iw/exec'; 
+        // 🛑 BẠN HÃY DÁN LẠI LINK GOOGLE SCRIPT VÀO ĐÂY:
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwRi0gDFQgXDkZLY5ethhg-1NGT3He-SZW06xtrg9Et-2H8S0fQK7GsNEN4xN9ZexJ2Iw/exec';
         
         const finalURL = scriptURL + '?name=' + encodeURIComponent(name) + '&phone=' + encodeURIComponent(phone) + '&address=' + encodeURIComponent(address) + '&product=VongTram&price=179000&quantity=' + qty;
 
-        // Gửi dữ liệu đi
         fetch(finalURL, { method: 'GET', mode: 'no-cors' })
         .then(() => {
-            // Ngay khi gửi thành công về Sheet -> Chuyển thẳng sang trang Cảm ơn
+            // Ghi chú quan trọng: Tên file phải đúng 100% với tên bạn đã tạo
             window.location.href = "thankyou.html";
-        })
-        .catch(err => {
-            alert("Lỗi kết nối mạng, dữ liệu tạm thời chưa được gửi. Vui lòng kiểm tra và thử lại!");
-            if (btn) { btn.innerText = "XÁC NHẬN ĐẶT HÀNG"; btn.disabled = false; }
-        });
-    });
-}
-            // TikTok Pixel: Báo cáo chuyển đổi mua hàng thành công (CompletePayment)
-            if (typeof ttq !== 'undefined') {
-                ttq.track('CompletePayment', {
-                    content_name: 'Vòng trầm hương 108 Hạt', 
-                    value: 179000,                           
-                    currency: 'VND'                          
-                });
-            }
         })
         .catch(err => {
             alert("Lỗi kết nối mạng, dữ liệu tạm thời chưa được gửi. Vui lòng kiểm tra và thử lại!");
