@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Đặt hàng thành công!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; padding: 0; background-color: #f5f5f5; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .thankyou-box { background: #fff; padding: 40px 30px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); text-align: center; max-width: 90%; width: 400px; }
+        .icon-success { font-size: 70px; margin-bottom: 15px; display: block; }
+        .title { color: #ee4d2d; font-size: 24px; font-weight: 700; margin: 0 0 15px 0; }
+        .desc { color: #555; font-size: 15px; line-height: 1.6; margin-bottom: 25px; }
+        .btn-home { display: inline-block; background: #ee4d2d; color: #fff; text-decoration: none; padding: 12px 30px; border-radius: 8px; font-weight: 600; font-size: 16px; transition: background 0.3s; }
+        .btn-home:hover { background: #d73d22; }
+    </style>
+
+    <script>
+    !function (w, d, t) {
+      w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};var i=document.createElement("script");i.type="text/javascript",i.async=!0,i.src=r+"?sdkid="+e+"&lib="+t;var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(i,a)};
+      
+      // MÃ PIXEL CỦA BẠN
+      ttq.load('CT8RAE3C77UBGVBCNBMG'); 
+      ttq.page();
+      
+      // BÁO CÁO CHUYỂN ĐỔI NGAY KHI VÀO TRANG NÀY
+      ttq.track('CompletePayment', {
+          content_name: 'Vòng trầm hương 108 Hạt', 
+          value: 179000,                           
+          currency: 'VND'                          
+      });
+    }(window, document, 'ttq');
+    </script>
+</head>
+<body>
+    <div class="thankyou-box">
+        <span class="icon-success">🎉</span>
+        <h1 class="title">ĐẶT HÀNG THÀNH CÔNG!</h1>
+        <p class="desc">Cảm ơn bạn đã tin tưởng mua sắm.<br>Thông tin đơn hàng của bạn đã được ghi nhận. Nhân viên của chúng tôi sẽ sớm gọi điện thoại để xác nhận đơn hàng với bạn nhé!</p>
+        <a href="index.html" class="btn-home">Quay lại trang chủ</a>
+    </div>
+</body>
+</html>
