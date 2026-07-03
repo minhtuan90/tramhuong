@@ -46,43 +46,58 @@ document.addEventListener('DOMContentLoaded', () => {
     try { initCountdown(); } catch(e) { console.error("Countdown Error:", e); }
 });
 
-// HÀM FAQ ĐÃ ĐƯỢC ÉP KIỂU HIỂN THỊ CHỐNG XUNG ĐỘT CSS
+// ==========================================
+// HÀM FAQ ĐÃ ĐƯỢC NÂNG CẤP ĐỂ CHỐNG LỖI CẮT CHỮ
+// ==========================================
 function initAccordion() {
-    // 1. Tiêm CSS "quyền lực tuyệt đối" để ép hiển thị xuyên qua mọi lớp khóa của giao diện
-    if (!document.getElementById('faq-injected-css')) {
+    if (!document.getElementById('faq-injected-css-v2')) {
         const style = document.createElement('style');
-        style.id = 'faq-injected-css';
+        style.id = 'faq-injected-css-v2';
         style.innerHTML = `
-            /* Ép thẻ cha không được khóa chiều cao, cho phép tràn nội dung */
-            .accordion-item {
-                height: auto !important;
-                overflow: visible !important;
+            /* Bắt toàn bộ khối FAQ phải tự do giãn nở */
+            .accordion { 
+                display: block !important; 
+                height: auto !important; 
             }
-            /* Ẩn nội dung khi chưa click */
+            /* Ép từng câu hỏi bung chiều cao đẩy các câu dưới xuống */
+            .accordion-item {
+                display: block !important;
+                height: auto !important;
+                min-height: fit-content !important;
+                overflow: visible !important;
+                position: relative !important;
+            }
+            /* Đảm bảo câu hỏi có nền trắng để không bị chữ đè lên */
+            .accordion-header {
+                background-color: #fff !important;
+                position: relative !important;
+                z-index: 2 !important;
+            }
             .accordion-content { 
                 display: none !important; 
             }
-            /* Mở bung nội dung khi click */
-            .accordion-content.show-active { 
-                display: block !important; 
-                height: auto !important; 
-                opacity: 1 !important; 
+            /* Định dạng lại khoảng trống khi câu trả lời mở ra */
+            .accordion-content.show-active {
+                display: block !important;
+                height: auto !important;
+                max-height: none !important; /* Xóa bỏ mọi cản trở chiều cao */
+                padding: 10px 0 20px 0 !important; /* Tạo viền trên dưới cho đẹp */
+                opacity: 1 !important;
                 visibility: visible !important;
-                margin-top: 10px !important;
-                padding-bottom: 10px !important;
             }
-            /* Ép hiển thị cả thẻ <p> bên trong đề phòng bị ẩn */
+            /* Ép chữ tự động xuống dòng và dãn dòng vừa mắt */
             .accordion-content.show-active p {
                 display: block !important;
-                visibility: visible !important;
-                opacity: 1 !important;
-                color: #333 !important; /* Đảm bảo chữ không bị trùng màu nền */
+                white-space: normal !important; /* Cho phép rớt dòng */
+                word-wrap: break-word !important; 
+                line-height: 1.6 !important; /* Dãn dòng chuẩn để dễ đọc */
+                color: #333 !important;
+                margin: 0 !important;
             }
         `;
         document.head.appendChild(style);
     }
 
-    // 2. Xử lý click an toàn tuyệt đối
     const items = document.querySelectorAll('.accordion-item');
     items.forEach(item => {
         const header = item.querySelector('.accordion-header');
@@ -90,18 +105,17 @@ function initAccordion() {
         
         if (header && content) {
             header.onclick = function(e) {
-                // Chặn đứng các can thiệp từ mã ngầm của hệ thống gốc
                 e.preventDefault();
                 e.stopPropagation(); 
 
                 const icon = header.querySelector('.icon');
                 const isOpening = !content.classList.contains('show-active');
 
-                // Đóng tất cả các ô câu hỏi khác lại
+                // Đóng các ô khác
                 document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('show-active'));
                 document.querySelectorAll('.accordion-header .icon').forEach(i => i.innerText = '+');
 
-                // Mở ô câu hỏi hiện tại
+                // Mở ô được click
                 if (isOpening) {
                     content.classList.add('show-active');
                     if (icon) icon.innerText = '-';
