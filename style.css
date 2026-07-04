@@ -398,3 +398,25 @@ button,
     z-index: 99990 !important;
     visibility: visible !important;
 }
+/* ========================================== */
+/* FIX LỖI FORM ĐIỀN THÔNG TIN BỊ CHE KHUẤT  */
+/* ========================================== */
+
+/* Đẩy tấm kính mờ xuống lớp dưới */
+.overlay.active {
+    z-index: 99990 !important; 
+}
+
+/* Nhấc bổng Form (Modal) lên lớp cao nhất, không bị ai đè lên */
+.modal {
+    z-index: 999999 !important; 
+    pointer-events: auto !important;
+}
+
+/* Đảm bảo các ô nhập liệu bên trong Form có thể click và gõ được */
+.modal input, 
+.modal button {
+    position: relative !important;
+    z-index: 9999999 !important;
+    pointer-events: auto !important;
+}
