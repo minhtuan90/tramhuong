@@ -161,14 +161,13 @@ if (checkoutForm) {
         const address = document.getElementById('cus-address').value;
         const qty = document.getElementById('checkout-qty').value;
 
-        // 🛑 BẠN HÃY DÁN LẠI LINK GOOGLE SCRIPT VÀO ĐÂY:
+        // Link Google Script của bạn đã được cấu hình chuẩn
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwRi0gDFQgXDkZLY5ethhg-1NGT3He-SZW06xtrg9Et-2H8S0fQK7GsNEN4xN9ZexJ2Iw/exec';
         
         const finalURL = scriptURL + '?name=' + encodeURIComponent(name) + '&phone=' + encodeURIComponent(phone) + '&address=' + encodeURIComponent(address) + '&product=VongTram&price=179000&quantity=' + qty;
 
         fetch(finalURL, { method: 'GET', mode: 'no-cors' })
         .then(() => {
-            // Ghi chú quan trọng: Tên file phải đúng 100% với tên bạn đã tạo
             window.location.href = "thankyou.html";
         })
         .catch(err => {
@@ -176,59 +175,5 @@ if (checkoutForm) {
             if (btn) { btn.innerText = "XÁC NHẬN ĐẶT HÀNG"; btn.disabled = false; }
         });
     });
-}
-/* ========================================= */
-/* LỆNH ÉP MƯỢT TRÊN TRÌNH DUYỆT TIKTOK / FB */
-/* ========================================= */
-
-/* Giúp thao tác vuốt cuộn mượt mà như app gốc (đặc biệt trên iPhone) */
-html, body {
-    -webkit-overflow-scrolling: touch !important;
-    overscroll-behavior-y: none; /* Chống kéo quá đà khựng trang */
-}
-
-/* Ép các thành phần nặng (Ảnh, Slider, Nút bấm) dùng GPU để xử lý */
-img, .slider-track, .pulse-animation, .buy-now-btn {
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    will-change: transform;
-    backface-visibility: hidden;
-}
-
-/* Đảm bảo khung chứa không cản trở việc cuộn */
-.app-container {
-    overflow-x: hidden;
-    width: 100%;
-    position: relative;
-}
-/* ========================================== */
-/* TRỊ BỆNH NÚT BẤM BỊ LIỆT / BỊ CHE KHUẤT */
-/* ========================================== */
-
-/* 1. Ép tất cả các nút và menu phải nổi lên mặt trên cùng */
-button, 
-.accordion-header, 
-.buy-now-btn, 
-.icon-btn, 
-.cart-btn-top {
-    position: relative !important;
-    z-index: 99999 !important;
-    pointer-events: auto !important;
-}
-
-/* 2. Ép tấm kính mờ (overlay) phải tàng hình và lùi lại phía sau khi không dùng tới */
-.overlay {
-    pointer-events: none !important;
-    opacity: 0 !important;
-    z-index: -1 !important;
-    visibility: hidden !important;
-}
-
-/* 3. Chỉ hiện tấm kính mờ khi thực sự có form bật lên */
-.overlay.active {
-    pointer-events: auto !important;
-    opacity: 1 !important;
-    z-index: 99990 !important;
-    visibility: visible !important;
 }
 
