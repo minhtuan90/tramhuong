@@ -128,7 +128,7 @@ function initSlider() {
         index = (index + 1) % slides.length;
         track.style.transform = 'translateX(-' + (index * 100) + '%)';
         if (counter) counter.innerText = (index + 1) + '/' + slides.length;
-    }, 3000);
+    }, 5000);
 }
 
 function initCountdown() {
@@ -177,3 +177,28 @@ if (checkoutForm) {
         });
     });
 }
+/* ========================================= */
+/* LỆNH ÉP MƯỢT TRÊN TRÌNH DUYỆT TIKTOK / FB */
+/* ========================================= */
+
+/* Giúp thao tác vuốt cuộn mượt mà như app gốc (đặc biệt trên iPhone) */
+html, body {
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-y: none; /* Chống kéo quá đà khựng trang */
+}
+
+/* Ép các thành phần nặng (Ảnh, Slider, Nút bấm) dùng GPU để xử lý */
+img, .slider-track, .pulse-animation, .buy-now-btn {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+/* Đảm bảo khung chứa không cản trở việc cuộn */
+.app-container {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+}
+
