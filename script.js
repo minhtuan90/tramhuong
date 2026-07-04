@@ -201,4 +201,34 @@ img, .slider-track, .pulse-animation, .buy-now-btn {
     width: 100%;
     position: relative;
 }
+/* ========================================== */
+/* TRỊ BỆNH NÚT BẤM BỊ LIỆT / BỊ CHE KHUẤT */
+/* ========================================== */
+
+/* 1. Ép tất cả các nút và menu phải nổi lên mặt trên cùng */
+button, 
+.accordion-header, 
+.buy-now-btn, 
+.icon-btn, 
+.cart-btn-top {
+    position: relative !important;
+    z-index: 99999 !important;
+    pointer-events: auto !important;
+}
+
+/* 2. Ép tấm kính mờ (overlay) phải tàng hình và lùi lại phía sau khi không dùng tới */
+.overlay {
+    pointer-events: none !important;
+    opacity: 0 !important;
+    z-index: -1 !important;
+    visibility: hidden !important;
+}
+
+/* 3. Chỉ hiện tấm kính mờ khi thực sự có form bật lên */
+.overlay.active {
+    pointer-events: auto !important;
+    opacity: 1 !important;
+    z-index: 99990 !important;
+    visibility: visible !important;
+}
 
