@@ -172,18 +172,37 @@
                     </div>
                 </div>
             </div>
-            <form id="checkout-form">
+                        <form id="checkout-form">
                 <div class="form-group">
                     <input type="text" id="cus-name" placeholder="Họ và tên của bạn" required>
                 </div>
                 <div class="form-group">
                     <input type="tel" id="cus-phone" placeholder="Số điện thoại liên hệ" pattern="[0-9]{10,11}" required>
                 </div>
+                
                 <div class="form-group">
-                    <input type="text" id="cus-address" placeholder="Địa chỉ, Tên đường, Phường/xã, Tỉnh..." required>
+                    <select id="cus-province" required>
+                        <option value="">Chọn Tỉnh / Thành phố</option>
+                    </select>
                 </div>
+                <div class="form-group">
+                    <select id="cus-district" required disabled>
+                        <option value="">Chọn Quận / Huyện</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select id="cus-ward" required disabled>
+                        <option value="">Chọn Phường / Xã</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <input type="text" id="cus-address" placeholder="Số nhà, Tên đường, Thôn/Xóm..." required>
+                </div>
+                
                 <button type="submit" class="btn-primary full-width submit-btn" id="submit-order-btn">XÁC NHẬN ĐẶT HÀNG</button>
             </form>
+
         </div>
     </div>
 
