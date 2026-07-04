@@ -399,17 +399,30 @@ button,
     visibility: visible !important;
 }
 /* ========================================== */
-/* FIX LỖI FORM ĐIỀN THÔNG TIN BỊ CHE KHUẤT  */
+/* ========================================== */
+/* ÉP FORM MUA HÀNG NỔI LÊN CAO NHẤT (CHUẨN 100%) */
 /* ========================================== */
 
-/* Đẩy tấm kính mờ xuống lớp dưới */
+/* 1. Ghìm tấm kính mờ xuống lớp dưới cùng */
 .overlay.active {
-    z-index: 99990 !important; 
+    z-index: 9990 !important; 
 }
 
-/* Nhấc bổng Form (Modal) lên lớp cao nhất, không bị ai đè lên */
-.modal {
-    z-index: 999999 !important; 
+/* 2. Nhấc Form lên trên mặt kính (Bắt buộc phải có position: fixed) */
+.modal.active, 
+#checkout-modal.active {
+    position: fixed !important; 
+    z-index: 99999 !important; 
+    pointer-events: auto !important;
+    background-color: #ffffff !important; /* Trả lại màu trắng sáng cho Form */
+}
+
+/* 3. Mở khóa toàn bộ ô nhập chữ và thả xuống (Select) */
+#checkout-form input,
+#checkout-form select,
+#checkout-form button {
+    position: relative !important;
+    z-index: 999999 !important;
     pointer-events: auto !important;
 }
 
