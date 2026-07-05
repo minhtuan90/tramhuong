@@ -23,13 +23,15 @@
       ttq.load('CT8RAE3C77UBGVBCNBMG'); 
       ttq.page();
       
-      // Bắn sự kiện Hoàn Tất Thanh Toán với cấu trúc chuẩn 100% của TikTok
+ // Kích hoạt sự kiện Hoàn tất thanh toán (ĐÃ CHUẨN HÓA CONTENT_ID)
       ttq.track('CompletePayment', {
           content_type: 'product',
+          content_id: 'VTH108',           // <-- Đã bổ sung lớp ngoài
+          content_name: 'Vòng Trầm 108',  // <-- Đã bổ sung lớp ngoài
           contents: [
               {
                   content_id: 'VTH108',
-                  content_name: 'Vòng trầm hương 108 Hạt',
+                  content_name: 'Vòng Trầm 108',
                   quantity: 1,
                   price: 179000
               }
