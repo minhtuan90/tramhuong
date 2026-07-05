@@ -6,7 +6,24 @@ function openCheckout() {
     const modal = document.getElementById('checkout-modal');
     if (overlay) overlay.classList.add('active');
     if (modal) modal.classList.add('active');
-    if (typeof ttq !== 'undefined') ttq.track('InitiateCheckout');
+
+    if (typeof ttq !== 'undefined') {
+        ttq.track('InitiateCheckout', {
+            content_type: 'product',
+            content_id: 'VTH108',           // <-- Đã bổ sung lớp ngoài
+            content_name: 'Vòng Trầm 108',  // <-- Đã bổ sung lớp ngoài
+            contents: [
+                {
+                    content_id: 'VTH108',
+                    content_name: 'Vòng Trầm 108',
+                    quantity: 1,
+                    price: 179000
+                }
+            ],
+            value: 179000,
+            currency: 'VND'
+        });
+    }
 }
 
 function closeCheckout() {
