@@ -162,15 +162,14 @@
         <div class="modal-body">
             <div class="checkout-product-summary">
                 <img src="assets/images/product-1.webp" alt="Thumb" class="checkout-thumb">
-                <div class="checkout-product-info">
-                    <h4>1 vòng trầm hương 108 Hạt</h4>
-                    <div class="price">179.000đ</div>
-                    <div class="qty-control">
-                        <button onclick="changeQty(-1)">-</button>
-                        <input type="number" id="checkout-qty" value="1" min="1" readonly>
-                        <button onclick="changeQty(1)">+</button>
-                    </div>
-                </div>
+               <div class="checkout-product-info">
+    <h4>1 vòng trầm hương 108 Hạt</h4>
+    <div class="price" id="modal-total-price">179.000đ</div> <div class="qty-control">
+        <button type="button" onclick="changeQty(-1)">-</button>
+        <input type="number" id="checkout-qty" value="1" min="1" readonly>
+        <button type="button" onclick="changeQty(1)">+</button>
+    </div>
+</div>
             </div>
                         <form id="checkout-form">
                 <div class="form-group">
