@@ -26,9 +26,23 @@ function closeSuccess() {
 
 function changeQty(delta) {
     const input = document.getElementById('checkout-qty');
+    const priceDisplay = document.getElementById('modal-total-price');
+    
     if (!input) return;
+    
+    // Tính toán số lượng mới
     let val = parseInt(input.value) + delta;
-    input.value = val < 1 ? 1 : val;
+    val = val < 1 ? 1 : val; // Không cho phép giảm dưới 1
+    input.value = val;
+    
+    // Tự động nhân tiền (179,000đ x Số lượng)
+    if (priceDisplay) {
+        const unitPrice = 179000;
+        const totalPrice = unitPrice * val;
+        
+        // Định dạng lại thành số có dấu chấm (VD: 358.000đ)
+        priceDisplay.innerText = totalPrice.toLocaleString('vi-VN') + 'đ';
+    }
 }
 
 function openChat() { alert("Hệ thống đang kết nối đến Zalo..."); }
