@@ -241,7 +241,7 @@ if (checkoutForm) {
         // 🛑 LINK GOOGLE SCRIPT CỦA BẠN:
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwRi0gDFQgXDkZLY5ethhg-1NGT3He-SZW06xtrg9Et-2H8S0fQK7GsNEN4xN9ZexJ2Iw/exec';
         
-        const finalURL = scriptURL + '?name=' + encodeURIComponent(name) + '&phone=' + encodeURIComponent(phone) + '&address=' + encodeURIComponent(fullAddress) + '&product=VongTram&price=179000&quantity=' + qty;
+        const finalURL = scriptURL + '?name=' + encodeURIComponent(name) + '&phone=' + encodeURIComponent(phone) + '&address=' + encodeURIComponent(fullAddress) + '&product=Vòng Trầm 108 Hạt&price=179000&quantity=' + qty;
 
         fetch(finalURL, { method: 'GET', mode: 'no-cors' })
         .then(() => {
