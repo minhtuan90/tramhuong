@@ -238,11 +238,12 @@ if (checkoutForm) {
         const fullAddress = `${street}, ${wardName}, ${distName}, ${provName}`;
         const qty = document.getElementById('checkout-qty').value;
 
-        // 🛑 LINK GOOGLE SCRIPT CỦA BẠN:
+   // ... code cũ ở trên
+        // 🛑 BẠN DÁN LINK GOOGLE SCRIPT VÀO ĐÂY (VẪN LÀ LINK CŨ):
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwRi0gDFQgXDkZLY5ethhg-1NGT3He-SZW06xtrg9Et-2H8S0fQK7GsNEN4xN9ZexJ2Iw/exec';
         
-        const finalURL = scriptURL + '?name=' + encodeURIComponent(name) + '&phone=' + encodeURIComponent(phone) + '&address=' + encodeURIComponent(fullAddress) + '&product=Vòng Trầm 108 Hạt&price=179000&quantity=' + qty;
-
+        // THÊM CHUỖI &secret_key=MinhTuan90@2024 VÀO CUỐI CÙNG
+        const finalURL = scriptURL + '?name=' + encodeURIComponent(name) + '&phone=' + encodeURIComponent(phone) + '&address=' + encodeURIComponent(fullAddress) + '&product=VongTram&price=179000&quantity=' + qty + '&secret_key=MinhTuan90@2024';
         fetch(finalURL, { method: 'GET', mode: 'no-cors' })
         .then(() => {
             window.location.href = "thankyou.html";
